@@ -1,4 +1,4 @@
-function makef() {
+makef() {
   make -f "$(makef_path)" "$@"
 }
 
@@ -25,4 +25,9 @@ makef_path()
     path="./Makefile"
   fi
   echo $path
+}
+
+makef_edit()
+{
+  $EDITOR $(makef_path)
 }
