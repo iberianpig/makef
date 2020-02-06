@@ -1,17 +1,17 @@
 makef() {
-  make -f "$(makef_path)" "$@"
+  make -f "$(makefpath)" "$@"
 }
 
 _makef()
 {
-  if [ ! "$(makef_path)" ]; then
+  if [ ! "$(makefpath)" ]; then
     return
   fi
-  COMPREPLY=( $(compgen -W "$(grep -oE '^[a-zA-Z0-9_-]+:([^=]|$)' "$(makef_path)" | sed 's/[^a-zA-Z0-9_.-]*$//')" "$2") )
+  COMPREPLY=( $(compgen -W "$(grep -oE '^[a-zA-Z0-9_-]+:([^=]|$)' "$(makefpath)" | sed 's/[^a-zA-Z0-9_.-]*$//')" "$2") )
 }
 complete -F _makef makef
 
-makef_path()
+makefpath()
 {
   local path
   if [ "$MAKEF_PATH" ]; then
@@ -27,7 +27,13 @@ makef_path()
   echo $path
 }
 
-makef_edit()
+makefedit()
 {
-  $EDITOR $(makef_path)
+  local path
+  if [ "$MAKEF_PATH" ]; then
+    path="$MAKEF_PATH"
+  else
+    path="./Makefile"
+  fi
+  $EDITOR $path
 }
