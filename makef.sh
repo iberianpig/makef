@@ -16,7 +16,7 @@ makefpath()
   local path
   if [ "$MAKEF_PATH" ]; then
     if [ -f ./Makefile ] && [ "$MAKEF_PATH" != ./Makefile ]; then
-      path=$(tempfile)
+      path=$(mktemp)
       cat ./Makefile "$MAKEF_PATH" > "$path"
     else
       path="$MAKEF_PATH"
