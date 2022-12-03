@@ -1,5 +1,9 @@
 makef() {
-  make -f "$(makefpath)" "$@"
+  if [ ! "$(makefpath)" ]; then
+    make "$@"
+  else
+    make -f "$(makefpath)" "$@"
+  fi
 }
 
 _makef()
@@ -13,27 +17,24 @@ complete -F _makef makef
 
 makefpath()
 {
-  local path
   if [ "$MAKEF_PATH" ]; then
+  local path
     if [ -f ./Makefile ] && [ "$MAKEF_PATH" != ./Makefile ]; then
       path=$(mktemp)
       cat ./Makefile "$MAKEF_PATH" > "$path"
     else
       path="$MAKEF_PATH"
     fi
-  elif [ -f ./Makefile ]; then
-    path="./Makefile"
-  fi
   echo $path
+  fi
 }
 
 makefedit()
 {
-  local path
   if [ "$MAKEF_PATH" ]; then
-    path="$MAKEF_PATH"
+    $EDITOR "$(makefpath)"
   else
-    path="./Makefile"
+    echo '"$MAKEF_PATH" is not set' >&2
+    return 1
   fi
-  $EDITOR $path
 }
