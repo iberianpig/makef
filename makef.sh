@@ -64,5 +64,12 @@ all: help
 
 help: ## show this messages
 	@grep -E '^[a-zA-Z0-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
+
+NO_PHONY = /^:/
+PHONY := $(shell cat $(MAKEFILE_LIST) | awk -F':' '/^[a-z0-9_.-]+:/ && !$(NO_PHONY) {print $$1}')
+.PHONY: $(PHONY)
+
+show_phony:
+	@echo $(PHONY)
 EOF
 }
