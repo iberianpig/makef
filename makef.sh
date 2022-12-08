@@ -18,7 +18,7 @@ complete -F _makef makef
 makefpath()
 {
   if [ "$MAKEF_PATH" ]; then
-  local path
+    local path
     if [ -f ./Makefile ] && [ "$MAKEF_PATH" != ./Makefile ]; then
       path=$(mktemp)
       cat ./Makefile "$MAKEF_PATH" > "$path"
@@ -32,7 +32,7 @@ makefpath()
 makefedit()
 {
   if [ "$MAKEF_PATH" ]; then
-    $EDITOR "$(makefpath)"
+    $EDITOR "$MAKEF_PATH"
   else
     echo '"$MAKEF_PATH" is not set' >&2
     return 1
