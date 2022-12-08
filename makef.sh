@@ -38,3 +38,31 @@ makefedit()
     return 1
   fi
 }
+
+makefinit() {
+  if [ -f "$MAKEF_PATH" ]; then
+    read -p "$MAKEF_PATH already exists. Overwrite? (y/N) " answer
+    case "$answer" in
+      y|Y)
+        _create_makefile
+        ;;
+      *)
+        echo "Aborted."
+        exit 1
+        ;;
+    esac
+  else
+    _create_makefile
+  fi
+}
+
+_create_makefile() {
+    cat << 'EOF' > "$MAKEF_PATH"
+.PHONY: all
+
+all: help
+
+help: ## show this messages
+	@grep -E '^[a-zA-Z0-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
+EOF
+}
