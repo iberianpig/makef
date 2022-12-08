@@ -69,7 +69,7 @@ NO_PHONY = /^:/
 PHONY := $(shell cat $(MAKEFILE_LIST) | awk -F':' '/^[a-z0-9_.-]+:/ && !$(NO_PHONY) {print $$1}')
 .PHONY: $(PHONY)
 
-show_phony:
+show_phony: ## show phony
 	@echo $(PHONY)
 EOF
 }
