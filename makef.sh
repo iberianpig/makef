@@ -48,7 +48,7 @@ makefinit() {
         ;;
       *)
         echo "Aborted."
-        exit 1
+        return 1
         ;;
     esac
   else
