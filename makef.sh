@@ -57,6 +57,7 @@ makefinit() {
 }
 
 _create_makefile() {
+  if [ "$MAKEF_PATH" ]; then
     cat << 'EOF' > "$MAKEF_PATH"
 .PHONY: all
 
@@ -72,4 +73,8 @@ PHONY := $(shell cat $(MAKEFILE_LIST) | awk -F':' '/^[a-z0-9_.-]+:/ && !$(NO_PHO
 show_phony: ## show phony
   @echo $(PHONY)
 EOF
+  else
+    echo '"$MAKEF_PATH" is not set' >&2
+    return 1
+  fi
 }
