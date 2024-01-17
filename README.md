@@ -6,7 +6,7 @@ Override `Makefile` for developer local environment
 * Behave like make -f `make -f /path/to/git/ignored/Makefile`
 * Override the project's Makefile tasks in local envirioment
 * Unify commands for developer's local between different projects
-* No more wrong selections from Ctrl-r's command line history
+* No more wrong selections from Ctrl-R's command line history
 * Support `bash-completion`
 
 ## Installation
@@ -143,3 +143,14 @@ from .git/Makefile
 $ makef # press Tab key
 help   task1  task2
 ```
+
+### Change source Makefile
+
+If you want to use Makefile other than ./Makefile, write as follows in .envrc
+
+```sh
+export MAKEF_PATH=.git/Makefile
+export MAKEFILE=path/to/Makefile # add this line
+```
+
+then run `direnv allow`

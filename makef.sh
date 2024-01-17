@@ -19,13 +19,24 @@ makefpath()
 {
   if [ "$MAKEF_PATH" ]; then
     local path
-    if [ -f ./Makefile ] && [ "$MAKEF_PATH" != ./Makefile ]; then
-      path=$(mktemp)
-      cat ./Makefile "$MAKEF_PATH" > "$path"
+    if [ "$(makefile_original)" ] && [ "$MAKEF_PATH" != "$(makefile_original)" ]; then
+      path=$(mktemp) # path is temporary file for merging
+      cat "$(makefile_original)" "$MAKEF_PATH" > "$path"
     else
       path="$MAKEF_PATH"
     fi
-  echo $path
+    echo $path
+  fi
+}
+
+# $MAKEFILE: source Makefile. if not set, use ./Makefile
+# $MAKEF_PATH: Makefile path for override $MAKEFILE
+makefile_original()
+{
+  if [ "$MAKEFILE" ]; then
+    echo "$MAKEFILE"
+  elif [ -f ./Makefile ]; then
+    echo ./Makefile
   fi
 }
 
@@ -59,12 +70,14 @@ makefinit() {
 _create_makefile() {
   if [ "$MAKEF_PATH" ]; then
     cat << 'EOF' > "$MAKEF_PATH"
-.PHONY: all
 
 all: help
 
 help: ## show this messages
-  @grep -E '^[a-zA-Z0-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
+	@grep -E '^[a-zA-Z0-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
+
+MAKEFILE_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
+MAKEF := $(MAKE) -f $(MAKEFILE_DIR)/Makefile
 
 MAKEFILE_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
 MAKEF := $(MAKE) -f $(MAKEFILE_DIR)/Makefile
@@ -74,7 +87,7 @@ PHONY := $(shell cat $(MAKEFILE_LIST) | awk -F':' '/^[a-z0-9_.-]+:/ && !$(NO_PHO
 .PHONY: $(PHONY)
 
 show_phony: ## show phony
-  @echo $(PHONY)
+	@echo $(PHONY)
 EOF
   else
     echo '"$MAKEF_PATH" is not set' >&2
