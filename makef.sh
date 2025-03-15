@@ -18,14 +18,14 @@ complete -F _makef makef
 makefpath()
 {
   if [ "$MAKEF_PATH" ]; then
-    local path
-    if [ "$(makefile_original)" ] && [ "$MAKEF_PATH" != "$(makefile_original)" ]; then
-      path=$(mktemp) # path is temporary file for merging
-      cat "$(makefile_original)" "$MAKEF_PATH" > "$path"
+    local original_path=$(makefile_original)
+    if [ -f "$original_path" ] && [ ! "$original_path" -ef "$MAKEF_PATH" ]; then
+      local merged_makefile=$(mktemp) # path is temporary file for merging
+      cat "$(makefile_original)" "$MAKEF_PATH" > "$merged_makefile"
+      echo $merged_makefile
     else
-      path="$MAKEF_PATH"
+      echo "$MAKEF_PATH"
     fi
-    echo $path
   fi
 }
 
